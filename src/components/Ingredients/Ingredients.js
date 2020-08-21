@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useReducer } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useReducer,
+  useMemo,
+} from "react";
 
 import IngredientForm from "./IngredientForm";
 import IngredientList from "./IngredientList";
@@ -120,11 +126,20 @@ const Ingredients = () => {
     dispatch({ type: "SET", ingredients: filteredIngredients });
   }, []);
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     // setError(null);
     // setIsLoading(false);
     dispatchHttp({ type: "CLEAR" });
-  };
+  });
+
+  const ingredientList = useMemo(() => {
+    return (
+      <IngredientList
+        ingredients={userIngredients}
+        onRemoveItem={removeIngredientHandler}
+      />
+    );
+  }, [userIngredients, removeIngredientHandler]);
 
   return (
     <div className="App">
@@ -139,10 +154,11 @@ const Ingredients = () => {
 
       <section>
         <Search onLoadIngredients={filteredIngredients} />
-        <IngredientList
+        {ingredientList}
+        {/* <IngredientList
           ingredients={userIngredients}
           onRemoveItem={removeIngredientHandler}
-        />
+        /> */}
       </section>
     </div>
   );
